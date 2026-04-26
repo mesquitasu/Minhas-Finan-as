@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Finanças</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        
+        .container { width: 100%; max-width: 500px; background: var(--card); padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
+        .hidden { display: none; }
+
+        /* Dashboard Principal */
+        .main-balance { text-align: center; padding: 20px 0; }
+        .main-balance small { text-transform: uppercase; letter-spacing: 1px; font-weight: 600; color: #64748b; font-size: 0.8rem; }
+        .main-balance h2 { font-size: 2.8rem; font-weight: 700; margin: 5px 0; }
+        
+        .sub-balance { display: flex; justify-content: space-around; background: #f1f5f9; padding: 15px; border-radius: 16px; margin-bottom: 20px; }
+        .sub-item { text-align: center; }
+        .sub-item span { display: block; font-size: 0.75rem; font-weight: 600; color: #64748b; }
+        .sub-item div { font-weight: 700; font-size: 1rem; }
+
+        .status-badge { text-align: center; padding: 8px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; }
+        .no-vermelho { background: #fee2e2; color: var(--danger); }
+        .no-azul { background: #d1fae5; color: var(--success); }
+
+        /* Formulário */
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-size: 0.85rem; font-weight: 600; color: #64748b; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; outline: none; font-size: 1rem; transition: 0.2s; }
+        input:focus { border-color: var(--primary); }
+
+        /* Botões */
+        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-report { background: #64748b; }
+        .btn-delete { background: none; color: var(--danger); width: auto; font-size: 0.75rem; margin-top: 0; padding: 0 5px; box-shadow: none; }
+
+        /* Apoio */
+        .btn-apoie { 
+            display: inline-block; width: auto; padding: 6px 15px; background: #009ee3; 
+            color: white; border-radius: 20px; font-size: 0.75rem; text-decoration: none; 
+            font-weight: 600; margin-top: 20px; transition: 0.3s;
+        }
+        .btn-apoie:hover { opacity: 0.8; transform: translateY(-1px); }
+
+        /* Histórico */
+        .history { margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        .month-indicator { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 8px; }
+        .val-entrada { color: var(--success); }
+        .val-saida { color: var(--danger); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-section" style="text-align:center">
+        <h1 style="color:var(--primary); margin-bottom: 15px;">Minhas Finanças</h1>
+        <p style="color:#64748b; font-size: 0.9rem; margin-bottom: 25px;">Sua organização mensal automática com relatórios em PDF.</p>
+        <div class="form-group" style="text-align: left;">
+            <label>Como você se chama?</label>
+            <input type="text" id="user-name" placeholder="Ex: Suziane">
+        </div>
+        <button onclick="startApp()">Entrar no Painel</button>
+    </div>
+
+    <div id="app-section" class="hidden">
+        <div id="greeting" style="font-weight: 600; color: #64748b; margin-bottom: 10px;"></div>
+
+        <div class="main-balance">
+            <small>Saldo Disponível</small>
+            <h2 id="total-net">R$ 0,00</h2>
+        </div>
+
+        <div class="sub-balance">
+            <div class="sub-item">
+                <span>ENTRADAS</span>
+                <div id="total-in" class="val-entrada">R$ 0,00</div>
+            </div>
+            <div class="sub-item">
+                <span>SAÍDAS</span>
+                <div id="total-out" class="val-saida">R$ 0,00</div>
+            </div>
+        </div>
+
+        <div id="status-box" class="status-badge"></div>
+
+        <div class="form-group">
+            <label>Descrição</label>
+            <input type="text" id="desc" placeholder="O que você gastou ou recebeu?">
+        </div>
+        <div class="form-group">
+            <label>Valor</label>
+            <input type="text" id="amount" placeholder="R$ 0,00" oninput="maskMoney(this)">
+        </div>
+        <div class="form-group">
+            <label>Tipo</label>
+            <select id="type">
+                <option value="saida">Gasto (Saída)</option>
+                <option value="entrada">Renda (Entrada)</option>
+            </select>
+        </div>
+
+        <button onclick="addTransaction()">Registrar</button>
+        <button class="btn-report" onclick="generatePDF()">📄 Gerar Relatório em PDF</button>
+
+        <div class="history">
+            <div class="month-indicator" id="current-month-display"></div>
+            <div id="transaction-list"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://mpago.la/14h94CT" target="_blank" class="btn-apoie">Apoie</a>
+            <br>
+            <button onclick="clearData()" style="background: transparent; color: #94a3b8; font-size: 0.7rem; border: none; width: auto;">Resetar tudo</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+    let transactions = JSON.parse(localStorage.getItem('mf_dados')) || [];
+    let userName = localStorage.getItem('mf_user') || '';
+
+    if(userName) showApp();
+
+    function maskMoney(i) {
+        let v = i.value.replace(/\D/g,'');
+        v = (v/100).toFixed(2) + '';
+        v = v.replace(".", ",");
+        v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+        v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
+        i.value = "R$ " + v;
+    }
+
+    function parseCurrency(value) {
+        return parseFloat(value.replace("R$ ", "").replace(/\./g, "").replace(",", "."));
+    }
+
+    function startApp() {
+        const inputName = document.getElementById('user-name').value;
+        if(!inputName) return alert("Por favor, digite seu nome.");
+        userName = inputName;
+        localStorage.setItem('mf_user', userName);
+        showApp();
+    }
+
+    function showApp() {
+        document.getElementById('setup-section').classList.add('hidden');
+        document.getElementById('app-section').classList.remove('hidden');
+        document.getElementById('greeting').innerText = `Olá, ${userName}`;
+        updateUI();
+    }
+
+    function addTransaction() {
+        const desc = document.getElementById('desc').value;
+        const amount = parseCurrency(document.getElementById('amount').value);
+        const type = document.getElementById('type').value;
+        const now = new Date();
+        const monthYear = `${now.getMonth() + 1}/${now.getFullYear()}`;
+        if(!desc || isNaN(amount)) return alert("Preencha descrição e valor!");
+        transactions.push({ id: Date.now(), desc, amount, type, date: now.toLocaleDateString('pt-BR'), monthYear });
+        localStorage.setItem('mf_dados', JSON.stringify(transactions));
+        document.getElementById('desc').value = '';
+        document.getElementById('amount').value = '';
+        updateUI();
+    }
+
+    function updateUI() {
+        const list = document.getElementById('transaction-list');
+        const now = new Date();
+        const currentMY = `${now.getMonth() + 1}/${now.getFullYear()}`;
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        document.getElementById('current-month-display').innerText = `${monthNames[now.getMonth()]} / ${now.getFullYear()}`;
+        list.innerHTML = '';
+        let tIn = 0, tOut = 0;
+        const currentTransactions = transactions.filter(t => t.monthYear === currentMY);
+        currentTransactions.forEach(t => {
+            if(t.type === 'entrada') tIn += t.amount; else tOut += t.amount;
+            const item = document.createElement('div');
+            item.className = 'item';
+            item.innerHTML = `<div><span style="font-weight:600;">${t.desc}</span><br><small style="color:#94a3b8">${t.date}</small></div>
+                <div style="text-align:right"><span class="${t.type === 'entrada' ? 'val-entrada' : 'val-saida'}" style="font-weight:700">
+                ${t.type === 'entrada' ? '+' : '-'} R$ ${t.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span><br>
+                <button class="btn-delete" onclick="deleteItem(${t.id})">excluir</button></div>`;
+            list.prepend(item);
+        });
+        const total = tIn - tOut;
+        document.getElementById('total-in').innerText = `R$ ${tIn.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById('total-out').innerText = `R$ ${tOut.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        const netEl = document.getElementById('total-net');
+        netEl.innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        netEl.style.color = total >= 0 ? 'var(--success)' : 'var(--danger)';
+        const sb = document.getElementById('status-box');
+        if(currentTransactions.length > 0) {
+            sb.classList.remove('hidden');
+            sb.className = total >= 0 ? 'status-badge no-azul' : 'status-badge no-vermelho';
+            sb.innerText = total >= 0 ? "Você está no Azul! 🎉" : "Você está no Vermelho! ⚠️";
+        } else sb.classList.add('hidden');
+    }
+
+    function deleteItem(id) {
+        transactions = transactions.filter(t => t.id !== id);
+        localStorage.setItem('mf_dados', JSON.stringify(transactions));
+        updateUI();
+    }
+
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const now = new Date();
+        const currentMY = `${now.getMonth() + 1}/${now.getFullYear()}`;
+        const filtered = transactions.filter(t => t.monthYear === currentMY);
+        if(filtered.length === 0) return alert("Sem dados para gerar relatório.");
+        
+        doc.setFontSize(18);
+        doc.text("Relatório Mensal - Minhas Finanças", 20, 20);
+        doc.setFontSize(11);
+        doc.text(`Responsável: ${userName} | Período: ${currentMY}`, 20, 30);
+        doc.text("---------------------------------------------------------------------------------", 20, 35);
+        
+        let y = 45;
+        let tIn = 0, tOut = 0;
+        filtered.forEach(t => {
+            if(t.type === 'entrada') tIn += t.amount; else tOut += t.amount;
+            doc.text(`${t.date} - ${t.desc.substring(0, 30)}: ${t.type === 'entrada' ? '+' : '-'} R$ ${t.amount.toFixed(2)}`, 20, y);
+            y += 8;
+            if(y > 275) { doc.addPage(); y = 20; }
+        });
+        
+        y += 10;
+        doc.text("---------------------------------------------------------------------------------", 20, y);
+        y += 10;
+        doc.text(`ENTRADAS: R$ ${tIn.toFixed(2)}`, 20, y);
+        doc.text(`SAÍDAS: R$ ${tOut.toFixed(2)}`, 20, y + 8);
+        doc.setFont("helvetica", "bold");
+        doc.text(`SALDO: R$ ${(tIn - tOut).toFixed(2)}`, 20, y + 18);
+        
+        doc.save(`Relatorio_${currentMY.replace("/","-")}.pdf`);
+    }
+
+    function clearData() {
+        if(confirm("Apagar todos os dados permanentemente?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+</script>
+</body>
+</html>
