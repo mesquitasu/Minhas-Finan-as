@@ -2,138 +2,498 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Finanças</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Minhas Finanças Pro | Dashboard Inteligente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
-        
-        .container { width: 100%; max-width: 500px; background: var(--card); padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
-        .hidden { display: none; }
-
-        /* Dashboard Principal */
-        .main-balance { text-align: center; padding: 20px 0; }
-        .main-balance small { text-transform: uppercase; letter-spacing: 1px; font-weight: 600; color: #64748b; font-size: 0.8rem; }
-        .main-balance h2 { font-size: 2.8rem; font-weight: 700; margin: 5px 0; }
-        
-        .sub-balance { display: flex; justify-content: space-around; background: #f1f5f9; padding: 15px; border-radius: 16px; margin-bottom: 20px; }
-        .sub-item { text-align: center; }
-        .sub-item span { display: block; font-size: 0.75rem; font-weight: 600; color: #64748b; }
-        .sub-item div { font-weight: 700; font-size: 1rem; }
-
-        .status-badge { text-align: center; padding: 8px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; }
-        .no-vermelho { background: #fee2e2; color: var(--danger); }
-        .no-azul { background: #d1fae5; color: var(--success); }
-
-        /* Formulário */
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-size: 0.85rem; font-weight: 600; color: #64748b; }
-        input, select { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; outline: none; font-size: 1rem; transition: 0.2s; }
-        input:focus { border-color: var(--primary); }
-
-        /* Botões */
-        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn-report { background: #64748b; }
-        .btn-delete { background: none; color: var(--danger); width: auto; font-size: 0.75rem; margin-top: 0; padding: 0 5px; box-shadow: none; }
-
-        /* Apoio */
-        .btn-apoie { 
-            display: inline-block; width: auto; padding: 6px 15px; background: #009ee3; 
-            color: white; border-radius: 20px; font-size: 0.75rem; text-decoration: none; 
-            font-weight: 600; margin-top: 20px; transition: 0.3s;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .btn-apoie:hover { opacity: 0.8; transform: translateY(-1px); }
 
-        /* Histórico */
-        .history { margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
-        .month-indicator { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 8px; }
-        .val-entrada { color: var(--success); }
-        .val-saida { color: var(--danger); }
+        /* Glassmorphism Container */
+        .glass-container {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Setup Section Modern */
+        .setup-card {
+            padding: 48px 32px;
+            text-align: center;
+            background: white;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .setup-card h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b, #2d3a5e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .setup-card p {
+            color: #5b6e8c;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .modern-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e9eef3;
+            border-radius: 28px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+            background: #f8fafd;
+            margin-bottom: 24px;
+        }
+
+        .modern-input:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(105deg, #2563eb 0%, #4f46e5 100%);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(37,99,235,0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(37,99,235,0.35);
+        }
+
+        /* Tabs Elegantes */
+        .tabs-modern {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 60px;
+            margin: 24px 24px 20px 24px;
+        }
+
+        .tab-btn-modern {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #5b6e8c;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn-modern i {
+            font-size: 1rem;
+        }
+
+        .tab-btn-modern.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Conteúdo interno */
+        .content-pane {
+            padding: 0 24px 30px 24px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #1a2a3a, #0f172a);
+            border-radius: 36px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            color: white;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+        }
+
+        .balance-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .balance-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 12px 0 4px;
+            word-break: break-word;
+        }
+
+        .greeting-text {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Grelha gráficos moderna */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 28px;
+            padding: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+            transition: transform 0.2s;
+        }
+
+        .chart-card canvas {
+            max-height: 170px;
+            width: 100%;
+        }
+
+        /* Formulário refinado */
+        .form-modern-group {
+            margin-bottom: 16px;
+        }
+
+        .input-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 18px;
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .input-icon input, .input-icon select {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid #edf2f7;
+            border-radius: 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: #ffffff;
+            transition: all 0.2s;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #edf2f7;
+            border-radius: 28px;
+            background: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .double-flex {
+            display: flex;
+            gap: 12px;
+        }
+
+        .double-flex > div {
+            flex: 1;
+        }
+
+        /* Listas estilizadas */
+        .history-list {
+            margin-top: 28px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .history-item {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border: 1px solid #f0f4f9;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .history-item:hover {
+            border-color: #cbd5e1;
+            transform: scale(1.01);
+        }
+
+        .item-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .category-badge {
+            background: #eef2ff;
+            color: #2563eb;
+            font-size: 0.65rem;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .amount-positive {
+            color: #10b981;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .amount-negative {
+            color: #ef4444;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .delete-btn-icon {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            width: auto;
+            padding: 8px;
+            margin: 0;
+        }
+
+        .delete-btn-icon:hover {
+            color: #ef4444;
+        }
+
+        .commitment-warning {
+            border-left: 5px solid #f59e0b;
+        }
+
+        .small-date {
+            font-size: 0.7rem;
+            color: #7c8ba0;
+            margin-top: 4px;
+        }
+
+        .reset-btn {
+            background: transparent;
+            box-shadow: none;
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.8rem;
+            border: 1px solid #e2e8f0;
+            margin-top: 25px;
+            background: white;
+            border-radius: 60px;
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        .reset-btn:hover {
+            background: #fef2f2;
+            color: #ef4444;
+            border-color: #fecaca;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        button {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="setup-section" style="text-align:center">
-        <h1 style="color:var(--primary); margin-bottom: 15px;">Minhas Finanças</h1>
-        <p style="color:#64748b; font-size: 0.9rem; margin-bottom: 25px;">Sua organização mensal automática com relatórios em PDF.</p>
-        <div class="form-group" style="text-align: left;">
-            <label>Como você se chama?</label>
-            <input type="text" id="user-name" placeholder="Maria">
+<div class="glass-container" id="rootApp">
+    <!-- Setup inicial -->
+    <div id="setup-section">
+        <div class="setup-card">
+            <div class="logo-icon"><i class="fas fa-coins"></i></div>
+            <h1>Minhas Finanças Pro</h1>
+            <p>Organize receitas, despesas e compromissos</p>
+            <input type="text" id="user-name" class="modern-input" placeholder="Digite seu nome" autocomplete="off">
+            <button class="btn-primary" onclick="startApp()"><i class="fas fa-arrow-right"></i> Iniciar Dashboard</button>
         </div>
-        <button onclick="startApp()">Entrar no Painel</button>
     </div>
 
+    <!-- App principal -->
     <div id="app-section" class="hidden">
-        <div id="greeting" style="font-weight: 600; color: #64748b; margin-bottom: 10px;"></div>
-
-        <div class="main-balance">
-            <small>Saldo Disponível</small>
-            <h2 id="total-net">R$ 0,00</h2>
+        <div class="tabs-modern">
+            <button class="tab-btn-modern active" onclick="switchTab('financas', this)"><i class="fas fa-chart-line"></i> Finanças</button>
+            <button class="tab-btn-modern" onclick="switchTab('compromissos', this)"><i class="fas fa-calendar-check"></i> Compromissos</button>
         </div>
 
-        <div class="sub-balance">
-            <div class="sub-item">
-                <span>ENTRADAS</span>
-                <div id="total-in" class="val-entrada">R$ 0,00</div>
+        <!-- Aba Finanças -->
+        <div id="tab-financas" class="content-pane">
+            <div class="balance-card">
+                <div class="balance-label">SALDO TOTAL</div>
+                <div class="balance-value" id="total-net">R$ 0,00</div>
+                <div class="greeting-text" id="greeting"></div>
             </div>
-            <div class="sub-item">
-                <span>SAÍDAS</span>
-                <div id="total-out" class="val-saida">R$ 0,00</div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <canvas id="chartInOut"></canvas>
+                </div>
+                <div class="chart-card">
+                    <canvas id="chartCategories"></canvas>
+                </div>
             </div>
+
+            <div class="form-modern-group">
+                <div class="input-icon">
+                    <i class="fas fa-pen"></i>
+                    <input type="text" id="desc" placeholder="Ex: Freelancer, Aluguel, mercado">
+                </div>
+            </div>
+            <div class="double-flex">
+                <div class="form-modern-group">
+                    <div class="input-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                        <input type="text" id="amount" placeholder="R$ 0,00" oninput="maskMoney(this)">
+                    </div>
+                </div>
+                <div class="form-modern-group">
+                    <select id="type">
+                        <option value="saida">🔻 Gasto (Saída)</option>
+                        <option value="entrada">🔺 Renda (Entrada)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-modern-group">
+                <select id="category">
+                    <option value="Salário">💼 Salário / Renda</option>
+                    <option value="Casa">🏠 Casa</option>
+                    <option value="Alimentação">🍔 Alimentação</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Saúde">💊 Saúde</option>
+                    <option value="Lazer">🎬 Lazer</option>
+                    <option value="Outros">📌 Outros</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="addTransaction()"><i class="fas fa-plus-circle"></i> Registrar Movimentação</button>
+            
+            <div class="history-list" id="transaction-list"></div>
         </div>
 
-        <div id="status-box" class="status-badge"></div>
-
-        <div class="form-group">
-            <label>Descrição</label>
-            <input type="text" id="desc" placeholder="O que você gastou ou recebeu?">
+        <!-- Aba Compromissos -->
+        <div id="tab-compromissos" class="content-pane hidden">
+            <div style="background: #fffbeb; border-radius: 32px; padding: 20px; margin-bottom: 24px;">
+                <h3 style="display: flex; align-items: center; gap: 8px; color: #b45309;"><i class="fas fa-bell"></i> Contas a Pagar</h3>
+                <p style="font-size: 0.8rem; color: #92400e;">Organize seus vencimentos mensais</p>
+            </div>
+            <div class="form-modern-group">
+                <div class="input-icon">
+                    <i class="fas fa-tag"></i>
+                    <input type="text" id="comp-desc" placeholder="Ex: Netflix, Cartão, Faculdade">
+                </div>
+            </div>
+            <div class="double-flex">
+                <div class="form-modern-group">
+                    <div class="input-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <input type="text" id="comp-amount" placeholder="Valor" oninput="maskMoney(this)">
+                    </div>
+                </div>
+                <div class="form-modern-group">
+                    <div class="input-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="comp-date">
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary" style="background: linear-gradient(105deg, #f59e0b, #d97706);" onclick="addCommitment()"><i class="fas fa-save"></i> Agendar Compromisso</button>
+            <div class="history-list" id="commitment-list"></div>
         </div>
-        <div class="form-group">
-            <label>Valor</label>
-            <input type="text" id="amount" placeholder="R$ 0,00" oninput="maskMoney(this)">
-        </div>
-        <div class="form-group">
-            <label>Tipo</label>
-            <select id="type">
-                <option value="saida">Gasto (Saída)</option>
-                <option value="entrada">Renda (Entrada)</option>
-            </select>
-        </div>
 
-        <button onclick="addTransaction()">Registrar</button>
-        <button class="btn-report" onclick="generatePDF()">📄 Gerar Relatório em PDF</button>
-
-        <div class="history">
-            <div class="month-indicator" id="current-month-display"></div>
-            <div id="transaction-list"></div>
-        </div>
-
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="https://mpago.la/1nt6kcz" target="_blank" class="btn-apoie">Apoie💜</a>
-            <br>
-            <button onclick="clearData()" style="background: transparent; color: #94a3b8; font-size: 0.7rem; border: none; width: auto;">Resetar tudo</button>
+        <div style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
+            <button class="reset-btn" onclick="clearData()"><i class="fas fa-trash-alt"></i> Resetar todos os dados</button>
         </div>
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     let transactions = JSON.parse(localStorage.getItem('mf_dados')) || [];
+    let commitments = JSON.parse(localStorage.getItem('mf_comps')) || [];
     let userName = localStorage.getItem('mf_user') || '';
+    
+    let chart1, chart2;
 
-    if(userName) showApp();
+    if(userName) {
+        document.getElementById('setup-section').classList.add('hidden');
+        document.getElementById('app-section').classList.remove('hidden');
+        updateUI();
+        document.getElementById('greeting').innerHTML = `<i class="fas fa-smile-wink"></i> Olá, ${userName}! Vamos organizar suas metas.`;
+    }
 
     function maskMoney(i) {
         let v = i.value.replace(/\D/g,'');
@@ -145,117 +505,228 @@
     }
 
     function parseCurrency(value) {
-        return parseFloat(value.replace("R$ ", "").replace(/\./g, "").replace(",", "."));
+        if(!value) return 0;
+        let cleaned = value.replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
+        return parseFloat(cleaned) || 0;
     }
 
     function startApp() {
-        const inputName = document.getElementById('user-name').value;
-        if(!inputName) return alert("Por favor, digite seu nome.");
+        const inputName = document.getElementById('user-name').value.trim();
+        if(!inputName) return alert("✨ Digite seu nome para começar.");
         userName = inputName;
         localStorage.setItem('mf_user', userName);
-        showApp();
-    }
-
-    function showApp() {
         document.getElementById('setup-section').classList.add('hidden');
         document.getElementById('app-section').classList.remove('hidden');
-        document.getElementById('greeting').innerText = `Olá, ${userName}`;
+        document.getElementById('greeting').innerHTML = `<i class="fas fa-smile-wink"></i> Olá, ${userName}! Vamos organizar suas metas.`;
         updateUI();
     }
 
+    function switchTab(tab, btn) {
+        document.getElementById('tab-financas').classList.add('hidden');
+        document.getElementById('tab-compromissos').classList.add('hidden');
+        document.querySelectorAll('.tab-btn-modern').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(`tab-${tab}`).classList.remove('hidden');
+        btn.classList.add('active');
+    }
+
     function addTransaction() {
-        const desc = document.getElementById('desc').value;
-        const amount = parseCurrency(document.getElementById('amount').value);
+        const desc = document.getElementById('desc').value.trim();
+        const amountRaw = document.getElementById('amount').value;
+        const amount = parseCurrency(amountRaw);
         const type = document.getElementById('type').value;
-        const now = new Date();
-        const monthYear = `${now.getMonth() + 1}/${now.getFullYear()}`;
-        if(!desc || isNaN(amount)) return alert("Preencha descrição e valor!");
-        transactions.push({ id: Date.now(), desc, amount, type, date: now.toLocaleDateString('pt-BR'), monthYear });
+        const category = document.getElementById('category').value;
+        if(!desc) return alert("📝 Descreva a transação!");
+        if(isNaN(amount) || amount === 0) return alert("💰 Insira um valor válido.");
+        
+        transactions.unshift({ 
+            id: Date.now(), 
+            desc, 
+            amount, 
+            type, 
+            category, 
+            date: new Date().toLocaleDateString('pt-BR') 
+        });
         localStorage.setItem('mf_dados', JSON.stringify(transactions));
+        cleanFormFinancas();
+        updateUI();
+    }
+
+    function cleanFormFinancas() {
         document.getElementById('desc').value = '';
         document.getElementById('amount').value = '';
+    }
+
+    function addCommitment() {
+        const desc = document.getElementById('comp-desc').value.trim();
+        const amountRaw = document.getElementById('comp-amount').value;
+        const amount = parseCurrency(amountRaw);
+        const date = document.getElementById('comp-date').value;
+        if(!desc) return alert("⚠️ Qual é o compromisso?");
+        if(!date) return alert("📅 Informe a data de vencimento.");
+        if(isNaN(amount) || amount === 0) return alert("💰 Valor inválido para o compromisso.");
+        
+        commitments.unshift({ id: Date.now(), desc, amount, date });
+        localStorage.setItem('mf_comps', JSON.stringify(commitments));
+        document.getElementById('comp-desc').value = '';
+        document.getElementById('comp-amount').value = '';
+        document.getElementById('comp-date').value = '';
+        updateUI();
+    }
+
+    function deleteItem(id, type) {
+        if(type === 'fin') {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('mf_dados', JSON.stringify(transactions));
+        } else {
+            commitments = commitments.filter(c => c.id !== id);
+            localStorage.setItem('mf_comps', JSON.stringify(commitments));
+        }
         updateUI();
     }
 
     function updateUI() {
+        renderFinancas();
+        renderCompromissos();
+        renderCharts();
+    }
+
+    function renderFinancas() {
         const list = document.getElementById('transaction-list');
-        const now = new Date();
-        const currentMY = `${now.getMonth() + 1}/${now.getFullYear()}`;
-        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        document.getElementById('current-month-display').innerText = `${monthNames[now.getMonth()]} / ${now.getFullYear()}`;
         list.innerHTML = '';
         let tIn = 0, tOut = 0;
-        const currentTransactions = transactions.filter(t => t.monthYear === currentMY);
-        currentTransactions.forEach(t => {
-            if(t.type === 'entrada') tIn += t.amount; else tOut += t.amount;
-            const item = document.createElement('div');
-            item.className = 'item';
-            item.innerHTML = `<div><span style="font-weight:600;">${t.desc}</span><br><small style="color:#94a3b8">${t.date}</small></div>
-                <div style="text-align:right"><span class="${t.type === 'entrada' ? 'val-entrada' : 'val-saida'}" style="font-weight:700">
-                ${t.type === 'entrada' ? '+' : '-'} R$ ${t.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span><br>
-                <button class="btn-delete" onclick="deleteItem(${t.id})">excluir</button></div>`;
-            list.prepend(item);
-        });
-        const total = tIn - tOut;
-        document.getElementById('total-in').innerText = `R$ ${tIn.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById('total-out').innerText = `R$ ${tOut.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        const netEl = document.getElementById('total-net');
-        netEl.innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        netEl.style.color = total >= 0 ? 'var(--success)' : 'var(--danger)';
-        const sb = document.getElementById('status-box');
-        if(currentTransactions.length > 0) {
-            sb.classList.remove('hidden');
-            sb.className = total >= 0 ? 'status-badge no-azul' : 'status-badge no-vermelho';
-            sb.innerText = total >= 0 ? "Você está no Azul! 🎉" : "Você está no Vermelho! ⚠️";
-        } else sb.classList.add('hidden');
+        
+        if(transactions.length === 0) {
+            list.innerHTML = `<div style="text-align:center; padding: 30px; background:#f9f9fc; border-radius: 32px;"><i class="fas fa-receipt" style="color:#cbd5e1; font-size:2rem;"></i><p style="margin-top:8px; color:#5b6e8c;">Nenhuma movimentação ainda</p></div>`;
+        } else {
+            transactions.forEach(t => {
+                if(t.type === 'entrada') tIn += t.amount;
+                else tOut += t.amount;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'history-item';
+                itemDiv.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <div style="width:40px;height:40px;background:${t.type === 'entrada' ? '#e0f2fe' : '#fee2e2'}; border-radius:30px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas ${t.type === 'entrada' ? 'fa-arrow-up' : 'fa-arrow-down'}" style="color:${t.type === 'entrada' ? '#10b981' : '#ef4444'}"></i>
+                        </div>
+                        <div class="item-info">
+                            <h4>${escapeHtml(t.desc)}</h4>
+                            <span class="category-badge"><i class="fas fa-tag"></i> ${t.category}</span>
+                            <div class="small-date">${t.date}</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right; display:flex; align-items:center; gap:10px;">
+                        <span class="${t.type === 'entrada' ? 'amount-positive' : 'amount-negative'}">
+                            ${t.type === 'entrada' ? '+' : '-'} R$ ${t.amount.toLocaleString('pt-BR')}
+                        </span>
+                        <button class="delete-btn-icon" onclick="deleteItem(${t.id}, 'fin')"><i class="fas fa-trash-can"></i></button>
+                    </div>
+                `;
+                list.appendChild(itemDiv);
+            });
+        }
+        
+        const balance = tIn - tOut;
+        document.getElementById('total-net').innerHTML = `R$ ${balance.toLocaleString('pt-BR')}`;
     }
 
-    function deleteItem(id) {
-        transactions = transactions.filter(t => t.id !== id);
-        localStorage.setItem('mf_dados', JSON.stringify(transactions));
-        updateUI();
+    function renderCompromissos() {
+        const list = document.getElementById('commitment-list');
+        list.innerHTML = '';
+        if(commitments.length === 0) {
+            list.innerHTML = `<div style="text-align:center; padding: 30px; background:#fffbeb; border-radius: 32px;"><i class="fas fa-calendar-times"></i><p style="margin-top:8px;">Nenhum compromisso agendado</p></div>`;
+        } else {
+            commitments.forEach(c => {
+                const formattedDate = c.date.split('-').reverse().join('/');
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'history-item commitment-warning';
+                itemDiv.innerHTML = `
+                    <div>
+                        <h4><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> ${escapeHtml(c.desc)}</h4>
+                        <div class="small-date"><i class="far fa-calendar-alt"></i> Vence: ${formattedDate}</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-weight:800; color:#d97706;">R$ ${c.amount.toLocaleString('pt-BR')}</span>
+                        <button class="delete-btn-icon" onclick="deleteItem(${c.id}, 'comp')"><i class="fas fa-trash-can"></i></button>
+                    </div>
+                `;
+                list.appendChild(itemDiv);
+            });
+        }
     }
 
-    function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const now = new Date();
-        const currentMY = `${now.getMonth() + 1}/${now.getFullYear()}`;
-        const filtered = transactions.filter(t => t.monthYear === currentMY);
-        if(filtered.length === 0) return alert("Sem dados para gerar relatório.");
-        
-        doc.setFontSize(18);
-        doc.text("Relatório Mensal - Minhas Finanças", 20, 20);
-        doc.setFontSize(11);
-        doc.text(`Responsável: ${userName} | Período: ${currentMY}`, 20, 30);
-        doc.text("---------------------------------------------------------------------------------", 20, 35);
-        
-        let y = 45;
-        let tIn = 0, tOut = 0;
-        filtered.forEach(t => {
-            if(t.type === 'entrada') tIn += t.amount; else tOut += t.amount;
-            doc.text(`${t.date} - ${t.desc.substring(0, 30)}: ${t.type === 'entrada' ? '+' : '-'} R$ ${t.amount.toFixed(2)}`, 20, y);
-            y += 8;
-            if(y > 275) { doc.addPage(); y = 20; }
+    function renderCharts() {
+        const tIn = transactions.filter(t => t.type === 'entrada').reduce((acc, t) => acc + t.amount, 0);
+        const tOut = transactions.filter(t => t.type === 'saida').reduce((acc, t) => acc + t.amount, 0);
+        const ctx1 = document.getElementById('chartInOut')?.getContext('2d');
+        const ctx2 = document.getElementById('chartCategories')?.getContext('2d');
+        if(!ctx1 || !ctx2) return;
+
+        if(chart1) chart1.destroy();
+        chart1 = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['💰 Entradas', '💸 Saídas'],
+                datasets: [{
+                    data: [tIn, tOut],
+                    backgroundColor: ['#10b981', '#f97316'],
+                    borderWidth: 0,
+                    cutout: '60%',
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 11 }, boxWidth: 10 } },
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.label}: R$ ${ctx.raw.toLocaleString('pt-BR')}` } }
+                }
+            }
         });
-        
-        y += 10;
-        doc.text("---------------------------------------------------------------------------------", 20, y);
-        y += 10;
-        doc.text(`ENTRADAS: R$ ${tIn.toFixed(2)}`, 20, y);
-        doc.text(`SAÍDAS: R$ ${tOut.toFixed(2)}`, 20, y + 8);
-        doc.setFont("helvetica", "bold");
-        doc.text(`SALDO: R$ ${(tIn - tOut).toFixed(2)}`, 20, y + 18);
-        
-        doc.save(`Relatorio_${currentMY.replace("/","-")}.pdf`);
+
+        const cats = ['Casa', 'Alimentação', 'Transporte', 'Saúde', 'Lazer', 'Outros'];
+        const catData = cats.map(c => transactions.filter(t => t.type === 'saida' && t.category === c).reduce((acc, t) => acc + t.amount, 0));
+        if(chart2) chart2.destroy();
+        chart2 = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: cats,
+                datasets: [{
+                    data: catData,
+                    backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#94a3b8'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.label}: R$ ${ctx.raw.toLocaleString('pt-BR')}` } }
+                }
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
     }
 
     function clearData() {
-        if(confirm("Apagar todos os dados permanentemente?")) {
+        if(confirm("⚠️ ATENÇÃO: Isso apagará todas as finanças, compromissos e seu nome. Deseja continuar?")) {
             localStorage.clear();
             location.reload();
         }
     }
 </script>
+
 </body>
 </html>
+```
